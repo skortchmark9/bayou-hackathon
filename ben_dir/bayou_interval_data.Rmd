@@ -1,0 +1,147 @@
+---
+title: "Bayou Interval Data"
+output: html_notebook
+---
+
+
+```{r}
+
+library(tidyverse)
+library(httr2)
+library(httr)
+library(jsonlite)
+```
+
+
+```{r}
+bayou_token <- 'test_175_0c11cfd27240e5bb16e56bd0200013696e3fdeac70db824947a38190df630dc2'
+```
+
+```{r eval=FALSE, include=FALSE}
+curl_translate("curl --request GET \
+     --url https://bayou.energy/api/v2/customers/customer_id/intervals \
+     --header 'accept: application/json'")
+```
+
+```{r eval=FALSE, include=FALSE}
+
+req <- request("https://bayou.energy/api/v2/customers/2214/intervals") %>% 
+  req_method("GET") %>% 
+  req_headers(
+    accept = "application/json",
+  ) %>% 
+  req_auth_basic(bayou_token, "") 
+
+req_dry_run(req)
+
+resp <- req_perform(req)
+resp_json <- resp %>% resp_body_json()
+data_df <- as.data.frame(resp_json)
+data_df
+```
+
+```{r}
+customer_id <- 2214
+
+url <- paste("https://staging.bayou.energy/api/v2/customers/",customer_id,"/intervals", sep="")
+
+resp <- VERB("GET", url, add_headers('authorization' = 'Basic dGVzdF8xNzVfMGMxMWNmZDI3MjQwZTViYjE2ZTU2YmQwMjAwMDEzNjk2ZTNmZGVhYzcwZGI4MjQ5NDdhMzgxOTBkZjYzMGRjMjo='), content_type("application/octet-stream"), accept("application/json"))
+
+content <- content(resp)
+
+content$meters[[1]]$id
+
+#resp_json$meters$intervals
+
+intervals <- content$meters[[1]]$intervals
+
+intervals_df <- data.table::rbindlist(intervals) #, fill= TRUE) #fill doesn't seem to matter
+#IT WORKS!!!
+
+intervals_df
+
+```
+
+```{r eval=FALSE, include=FALSE}
+#intervals
+#content$meters[[1]]$intervals[[1]]
+#str(content$meters[[1]]$intervals)
+
+#as.data.frame(content$meters[[1]]$intervals)
+#error
+```
+
+```{r eval=FALSE, include=FALSE}
+#print(as.data.frame(do.call(rbind, intervals))) 
+```
+
+```{r eval=FALSE, include=FALSE}
+n.obs <- sapply(intervals, length)
+seq.max <- seq_len(max(n.obs))
+mat <- t(sapply(intervals, "[", i = seq.max))
+mat
+str(mat)
+as.data.frame(mat)
+as_tibble(mat)
+
+
+```
+
+```{r eval=FALSE, include=FALSE}
+
+toJSON(response, pretty = TRUE)
+```
+
+```{r eval=FALSE, include=FALSE}
+content$first_interval_discovered
+content$meters
+
+df <- fromJSON(content(resp, as = "text"))
+df
+
+df %>% 
+  unnest_wider(meters)
+
+content$meters
+
+content$meters[1]
+
+char <- rawToChar(resp$content)
+char
+
+#Convert to df 
+#df <- 
+fromJSON(char, flatten = TRUE)
+
+df$meters
+
+resp$data$data
+
+#resp_json <- 
+fromJSON(content(resp, as = "text"))
+
+resp_json
+
+#content(resp, as = "text")
+#fromJSON(content(resp, as = "parsed", type = "application/json"))
+#as.data.frame(content(resp, as = "parsed", type = "application/json"))
+
+
+```
+
+
+Explore the data
+```{r}
+(intervals_df <- intervals_df %>% 
+  mutate(start = as_datetime(start), end = as_datetime(end)) %>% 
+  arrange(desc(electricity_consumption))
+)
+
+ggplot(intervals_df, aes(start, electricity_consumption)) +
+  geom_point()
+
+```
+
+It appears to be fake data
+
+

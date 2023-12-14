@@ -1,0 +1,117 @@
+---
+title: "Bayou API Connection"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(httr2)
+library(docopt)
+```
+
+Create first customer: 
+
+curl https://staging.bayou.energy/api/v1/customers -XPOST -H "Content-Type: application/json" --data '
+{
+  "email": "m.scott@dundermifflin.com",
+  "utility": "speculoos_power"
+}
+' -u test_174_b4b7c210bd8595bb624ec66e93b273c2d6485b2060dca91da05c1c2ebb4adea1:
+
+```{r}
+bayou_token <- 'test_174_b4b7c210bd8595bb624ec66e93b273c2d6485b2060dca91da05c1c2ebb4adea1'
+
+curl_translate('curl https://staging.bayou.energy/api/v1/customers -XPOST -H "Content-Type: application/json" --data \'
+{
+  "email": "m.scott@dundermifflin.com",
+  "utility": "speculoos_power"
+}
+\' -u test_174_b4b7c210bd8595bb624ec66e93b273c2d6485b2060dca91da05c1c2ebb4adea1:')
+```
+
+
+```{r}
+
+req <- request("https://staging.bayou.energy/api/v1/customers") %>% 
+  req_method("POST") %>% 
+  req_headers(
+    `"Content-Type` = '',
+    #`"Content-Type` = "",
+  ) %>% 
+  req_body_raw("\n{\n  \"email\": \"m.scott@dundermifflin.com\",\n  \"utility\": \"speculoos_power\"\n}\n", "application/x-www-form-urlencoded") %>% 
+  #req_auth_basic("test_174_b4b7c210bd8595bb624ec66e93b273c2d6485b2060dca91da05c1c2ebb4adea1", "") 
+  req_auth_basic(bayou_token, "") 
+
+req_dry_run(req)
+
+resp <- req_perform(req)
+resp_json <- resp %>% resp_body_json()
+
+#data_df <- as.data.frame(resp_json)
+#data_df
+
+resp_json
+resp_json$id
+resp_json$onboarding_link
+resp_json$onboarding_token
+
+```
+{
+  "id": 2214,
+  "external_id": null,
+  "email": "m.scott@dundermifflin.com",
+  "first_name": null,
+  "last_name": null,
+  "phone_number": null,
+  "address_line_1": null,
+  "address_line_2": null,
+  "city": null,
+  "state": null,
+  "zipcode": null,
+  "utility": "speculoos_power",
+  "account_number": null,
+  "onboarding_link": "https://staging.bayou.energy/companies/145/onboard/a0bf1c4964edaac9fea765d1f0862219d034729f461b8c8a621c7a4075df101f_1703388728_0d8b2bc00098d635c816fce6c651580d13ed3e76b229a9fdf90e4e0a9ac6ece3",
+  "has_accepted_terms_on": null
+}
+
+Onboard the customer
+
+```{r}
+onboarding_link <- 'https://staging.bayou.energy/companies/145/onboard/a0bf1c4964edaac9fea765d1f0862219d034729f461b8c8a621c7a4075df101f_1703388728_0d8b2bc00098d635c816fce6c651580d13ed3e76b229a9fdf90e4e0a9ac6ece3'
+```
+Done through link
+
+Access customer's data
+curl https://staging.bayou.energy/api/v1/customers/2214/bills -u test_174_b4b7c210bd8595bb624ec66e93b273c2d6485b2060dca91da05c1c2ebb4adea1:
+
+```{r}
+
+curl_translate("curl https://staging.bayou.energy/api/v1/customers/2214/bills -u test_174_b4b7c210bd8595bb624ec66e93b273c2d6485b2060dca91da05c1c2ebb4adea1:")
+
+req <- request("https://staging.bayou.energy/api/v1/customers/2214/bills") %>% 
+  req_auth_basic(bayou_token, "") 
+
+resp <- req_perform(req)
+
+resp %>% resp_body_json() %>% str()
+resp %>% resp_body_json()  
+
+resp_json <- resp %>% resp_body_json() 
+
+resp %>% resp_body_json() 
+
+data_df <- as.data.frame(resp_json)
+data_df
+```
+
+```{r}
+library(httr)
+
+res <- httr::GET(url = "https://staging.bayou.energy/api/v1/customers/2214/bills", httr::authenticate("test_174_b4b7c210bd8595bb624ec66e93b273c2d6485b2060dca91da05c1c2ebb4adea1", ""))
+
+res
+
+```
+
+
+
