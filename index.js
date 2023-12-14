@@ -1,3 +1,7 @@
+// TODO: customer switcher
+// TODO: offset timestamps based on location
+// TODO: segment shapes by month?
+
 const months = {
     '01': 'January',
     '02': 'February',
@@ -87,7 +91,37 @@ async function plotDailyIntervals() {
         traces.push(tracesByMonth[month]);
     }
 
-    Plotly.newPlot('daily-intervals', traces);
+    const evShape = {
+        type: 'rect',
+        xref: 'x',
+        yref: 'y',
+        x0: '06:30',
+        x1: '14:00',
+        y0: 2100,
+        y1: 3000,
+        fillcolor: '#d3d3d3',
+        opacity: 0.4,
+        line: {
+            width: 0
+        },
+        label: {
+            text: 'Level 2 EV Charging',
+            font: { size: 10, color: 'green' },
+            textposition: 'top left',
+          },
+    };
+
+    const shapes = [evShape];
+
+    const layout = {
+        yaxis: {
+            title: 'kwH'
+        },
+        shapes,
+    };
+
+    const div = document.getElementById('daily-intervals');
+    Plotly.newPlot('daily-intervals', traces, layout);
 }
 
 async function plotAvgDailyIntervals() {
@@ -134,11 +168,14 @@ async function plotAvgDailyIntervals() {
         }
     })
 
-    var layout = {
+    const shapes = [];
+
+    const layout = {
         yaxis: {
-          title: 'kwH'
-        }
-      };
+            title: 'kwH'
+        },
+        shapes
+    };
 
     Plotly.newPlot('average-daily-intervals', traces, layout);
 }
