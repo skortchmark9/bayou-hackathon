@@ -84,7 +84,8 @@ function plotAllIntervals(data) {
     const layout = {
         xaxis: {
             rangeslider: selectorOptions,
-        }
+        },
+        yaxis: { autorange: true },
     };
 
     Plotly.newPlot('all-intervals', traces, layout);
@@ -244,6 +245,14 @@ async function main() {
         plotDailyIntervals(filtered);
         plotAvgDailyIntervals(filtered);
         updateSidebar(start, end);
+
+        const yValues = filtered.map((x) => x.net_electricity_consumption);
+
+        let yMin = Math.min(...yValues);
+        yMin = Math.floor(yMin / 100) * 100;
+        let yMax = Math.max(...yValues);
+        yMax = Math.ceil(yMax / 100) * 100;
+        return [yMin, yMax];
     }
 
     const debouncedRedrawInRange = debounce(redrawInRange, 300);
@@ -254,11 +263,23 @@ async function main() {
             const start = evt['xaxis.range[0]'];
             const end = evt['xaxis.range[1]'];
 
-            redrawInRange(start, end);
+            const yRange = redrawInRange(start, end);
+            const update = {
+                'yaxis.range': yRange
+            };
+          
+            Plotly.relayout('all-intervals', update);
+
         } else if (evt['xaxis.autorange']) {
             // redraw subplots
             plotDailyIntervals(data);
             plotAvgDailyIntervals(data);
+            const update = {
+                'yaxis': {}
+            };
+
+            Plotly.relayout('all-intervals', update);
+
 
         } else if (evt['xaxis.range']) {
             const start = evt['xaxis.range'][0];
