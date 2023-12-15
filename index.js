@@ -333,7 +333,7 @@ async function main() {
                     fillcolor: 'rgba(44, 160, 101, 0.5)',
                     line: {
                         color: 'rgb(44, 160, 101)'
-                    }                    
+                    }
                 }, {
                     type: 'line',
                     xref: 'paper',
@@ -352,7 +352,7 @@ async function main() {
                         font: { size: 10, color: 'green' },
                         textposition: 'top center',
                       },
-                  },]
+                  }]
             };
 
             Plotly.relayout('all-intervals', update);
@@ -361,10 +361,47 @@ async function main() {
         }
         if (location.hash === '#load-reduction') {
             const start = "2023-03-22 20:30";
+            const dropoff = "2023-04-20 10:00"
             const end = "2023-05-04 11:30";
             const update = {
                 'xaxis.range': [start, end],
-                shapes: [],
+                shapes: [{
+                    type: 'rect',
+                    xref: 'x',
+                    yref: 'y',
+                    x0: start,
+                    x1: dropoff,
+                    y0: 0,
+                    y1: 600,
+                    fillcolor: 'rgba(160, 44, 101, 0.1)',
+                    line: {
+                        color: 'rgb(160, 44, 101)'
+                    },
+                    // label: {
+                    //     text: 'Higher Average Load ~400wH',
+                    //     font: { size: 10, color: 'red' },
+                    //     textposition: 'top center',
+                    //     yanchor: 'top',
+                    //   },                    
+                }, {
+                    type: 'rect',
+                    xref: 'x',
+                    yref: 'y',
+                    x0: dropoff,
+                    x1: end,
+                    y0: 100,
+                    y1: 350,
+                    fillcolor: 'rgba(44, 160, 101, 0.1)',
+                    line: {
+                        color: 'rgb(44, 160, 101)'
+                    },
+                    // label: {
+                    //     text: 'Lower Average Load ~200wH',
+                    //     font: { size: 10, color: 'green' },
+                    //     textposition: 'top center',
+                    //     yanchor: 'top',
+                    //   },                    
+                }],
             };
 
             Plotly.relayout('all-intervals', update);
