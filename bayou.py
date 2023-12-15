@@ -17,10 +17,11 @@ bayou_api_key = "test_179_74ffca450b3e00baffd5eb9c0fefbbcb0e4b7d59ec15b233ce7333
 customers = [    
     2214, #Michael Scott
     2332, #James Gordey PSE Gas heating, no AC, gas stove, gas hot water heater
-    2314, #dhanur
+    2314, #dhanur, 350 Madrid St, San Francisco, CA 94112
     2301, #James Gordey SCL
     2287, #Mike Cozart
     2276, #Matt Forni
+          # Nathan Eidelson 3905 Cesar Chavez St, San Francisco, CA 94131
 ]
 
 token = 'test_175_0c11cfd27240e5bb16e56bd0200013696e3fdeac70db824947a38190df630dc2'

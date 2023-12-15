@@ -1,5 +1,4 @@
 // TODO: customer switcher
-// TODO: offset timestamps based on location
 // TODO: segment shapes by month?
 
 const months = {
@@ -32,9 +31,32 @@ const month_nos = [
     '12'
 ]
 
+function convertToPST(dateString) {
+    // Create a date object from the input string
+    const date = new Date(dateString);
+
+    // This is terrible and wrong for DST.
+    const offset = new Date(date.getTime() - 8 * (60 * 60 * 1000));
+    return offset.toISOString().replace('.000', '');
+}
+
+function convertDataToLocalTime(data) {
+    data.forEach((interval) => {
+        interval.start = convertToLocalTime(interval.start);
+    });
+    return data;
+}
+
+
+function convertToLocalTime(utcStr) {
+    // assume user is in PST
+    return convertToPST(utcStr);
+}
+
 async function get_data() {
     const r = await fetch('./dhanur_data.json')
-    const d = await r.json()
+    const d = await r.json();
+
     return d;
 }
 
@@ -48,6 +70,9 @@ function avg(arr) {
 
 async function plotAllIntervals() {
     const data = await get_data();
+    convertDataToLocalTime(data);
+
+    data.sort((a, b) => new Date(a.start) - new Date(b.start));
 
     const trace = {
         x: [],
@@ -60,13 +85,20 @@ async function plotAllIntervals() {
     }
 
     const traces = [trace];
+    const selectorOptions = {};
+    const layout = {
+        xaxis: {
+            rangeslider: selectorOptions,
+        }
+    };
 
-    Plotly.newPlot('all-intervals', traces);
+    Plotly.newPlot('all-intervals', traces, layout);
 }
 
 
 async function plotDailyIntervals() {
     const data = await get_data();
+    convertDataToLocalTime(data);
     
     const tracesByMonth = {};
 
@@ -95,27 +127,27 @@ async function plotDailyIntervals() {
         type: 'rect',
         xref: 'x',
         yref: 'y',
-        x0: '06:30',
-        x1: '14:00',
+        x0: '00:00',
+        x1: '03:00',
         y0: 2100,
         y1: 3000,
+        label: {
+            text: 'Level 2 EV Charging',
+            font: { size: 10, color: 'green' },
+            textposition: 'top left',
+        },
         fillcolor: '#d3d3d3',
         opacity: 0.4,
         line: {
             width: 0
         },
-        label: {
-            text: 'Level 2 EV Charging',
-            font: { size: 10, color: 'green' },
-            textposition: 'top left',
-          },
     };
 
     const shapes = [evShape];
 
     const layout = {
         yaxis: {
-            title: 'kwH'
+            title: 'wH'
         },
         shapes,
     };
@@ -126,6 +158,7 @@ async function plotDailyIntervals() {
 
 async function plotAvgDailyIntervals() {
     const data = await get_data();
+    convertDataToLocalTime(data);
     
     const tracesByMonth = {};
 
@@ -172,7 +205,7 @@ async function plotAvgDailyIntervals() {
 
     const layout = {
         yaxis: {
-            title: 'kwH'
+            title: 'wH'
         },
         shapes
     };
