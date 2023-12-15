@@ -223,12 +223,27 @@ async function main() {
     plotAllIntervals(data);
     plotDailyIntervals(data);
     plotAvgDailyIntervals(data);
+    updateSidebar(data[0].start, data[data.length - 1].start);
+
+    function updateSidebar(start, end) {
+        const startNice = new Date(start);
+        const endNice = new Date(end);
+
+        if (startNice.getDate() === endNice.getDate()) {
+            document.getElementById('viewing-range').innerText = `Viewing data from ${startNice.toDateString()} ${startNice.toLocaleTimeString()} - ${endNice.toLocaleTimeString()}.`
+
+        } else {
+            document.getElementById('viewing-range').innerText = `Viewing data from ${startNice.toDateString()} - ${endNice.toDateString()}.`
+
+        }
+
+    }
 
     function redrawInRange(start, end) {
-        console.log('redrww');
         const filtered = data.filter((interval) => interval.start > start && interval.start < end);
         plotDailyIntervals(filtered);
         plotAvgDailyIntervals(filtered);
+        updateSidebar(start, end);
     }
 
     const debouncedRedrawInRange = debounce(redrawInRange, 300);
