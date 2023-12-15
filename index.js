@@ -232,10 +232,10 @@ async function main() {
         const endNice = new Date(end);
 
         if (startNice.getDate() === endNice.getDate()) {
-            document.getElementById('viewing-range').innerText = `Viewing data from ${startNice.toDateString()} ${startNice.toLocaleTimeString()} - ${endNice.toLocaleTimeString()}.`
+            document.getElementById('viewing-range').innerText = `Viewing ${startNice.toDateString()} ${startNice.toLocaleTimeString()} - ${endNice.toLocaleTimeString()}.`
 
         } else {
-            document.getElementById('viewing-range').innerText = `Viewing data from ${startNice.toDateString()} - ${endNice.toDateString()}.`
+            document.getElementById('viewing-range').innerText = `Viewing ${startNice.toDateString()} - ${endNice.toDateString()}.`
 
         }
 
@@ -377,12 +377,6 @@ async function main() {
                     line: {
                         color: 'rgb(160, 44, 101)'
                     },
-                    // label: {
-                    //     text: 'Higher Average Load ~400wH',
-                    //     font: { size: 10, color: 'red' },
-                    //     textposition: 'top center',
-                    //     yanchor: 'top',
-                    //   },                    
                 }, {
                     type: 'rect',
                     xref: 'x',
@@ -395,12 +389,6 @@ async function main() {
                     line: {
                         color: 'rgb(44, 160, 101)'
                     },
-                    // label: {
-                    //     text: 'Lower Average Load ~200wH',
-                    //     font: { size: 10, color: 'green' },
-                    //     textposition: 'top center',
-                    //     yanchor: 'top',
-                    //   },                    
                 }],
             };
 
