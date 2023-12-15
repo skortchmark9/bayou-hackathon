@@ -68,12 +68,7 @@ function avg(arr) {
     return Math.round(t / arr.length);
 }
 
-async function plotAllIntervals() {
-    const data = await get_data();
-    convertDataToLocalTime(data);
-
-    data.sort((a, b) => new Date(a.start) - new Date(b.start));
-
+function plotAllIntervals(data) {
     const trace = {
         x: [],
         y: [],
@@ -96,10 +91,7 @@ async function plotAllIntervals() {
 }
 
 
-async function plotDailyIntervals() {
-    const data = await get_data();
-    convertDataToLocalTime(data);
-    
+function plotDailyIntervals(data) {
     const tracesByMonth = {};
 
     for (let interval of data) {
@@ -120,7 +112,9 @@ async function plotDailyIntervals() {
     const traces = [];
 
     for (const month of month_nos) {
-        traces.push(tracesByMonth[month]);
+        if (tracesByMonth[month]?.x.length) {
+            traces.push(tracesByMonth[month]);
+        }
     }
 
     const evShape = {
@@ -143,7 +137,7 @@ async function plotDailyIntervals() {
         },
     };
 
-    const shapes = [evShape];
+    const shapes = [];
 
     const layout = {
         yaxis: {
@@ -156,10 +150,7 @@ async function plotDailyIntervals() {
     Plotly.newPlot('daily-intervals', traces, layout);
 }
 
-async function plotAvgDailyIntervals() {
-    const data = await get_data();
-    convertDataToLocalTime(data);
-    
+function plotAvgDailyIntervals(data) {
     const tracesByMonth = {};
 
     for (let interval of data) {
@@ -180,7 +171,9 @@ async function plotAvgDailyIntervals() {
     const traces = [];
 
     for (const month of month_nos) {
-        traces.push(tracesByMonth[month]);
+        if (tracesByMonth[month]?.x.length) {
+            traces.push(tracesByMonth[month]);
+        }
     }
 
     // Average things out to make it less messy.
@@ -213,7 +206,60 @@ async function plotAvgDailyIntervals() {
     Plotly.newPlot('average-daily-intervals', traces, layout);
 }
 
+function debounce(fn, delay) {
+    let timeout;
+    return (...args) => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => fn(...args), delay);
+    };
+}
 
-plotAllIntervals()
-plotDailyIntervals();
-plotAvgDailyIntervals();
+async function main() {
+    const data = await get_data();
+    convertDataToLocalTime(data);
+
+    data.sort((a, b) => new Date(a.start) - new Date(b.start));
+
+    plotAllIntervals(data);
+    plotDailyIntervals(data);
+    plotAvgDailyIntervals(data);
+
+    function redrawInRange(start, end) {
+        console.log('redrww');
+        const filtered = data.filter((interval) => interval.start > start && interval.start < end);
+        plotDailyIntervals(filtered);
+        plotAvgDailyIntervals(filtered);
+    }
+
+    const debouncedRedrawInRange = debounce(redrawInRange, 300);
+
+    document.getElementById('all-intervals').on('plotly_relayout', (evt) => {
+        console.log(evt);
+        // from range selector
+        if (evt['xaxis.range[0]']) {
+            const start = evt['xaxis.range[0]'];
+            const end = evt['xaxis.range[1]'];
+
+            redrawInRange(start, end);
+            console.log(start, end);
+        } else if (evt['xaxis.autorange']) {
+            console.log('auto');
+
+            // redraw subplots
+            plotDailyIntervals(data);
+            plotAvgDailyIntervals(data);
+
+        } else if (evt['xaxis.range']) {
+            const start = evt['xaxis.range'][0];
+            const end = evt['xaxis.range'][1];
+            debouncedRedrawInRange(start, end);
+
+
+            console.log(start, end);
+        }
+    });
+}
+
+
+main();
+
