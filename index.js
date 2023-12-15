@@ -288,6 +288,31 @@ async function main() {
             debouncedRedrawInRange(start, end);
         }
     });
+
+    window.addEventListener('hashchange', (evt) => {
+        if (location.hash === '#l2-ev-charger') {
+            const start = "2023-11-29 20:00";
+            const end = "2023-12-12 23:45";
+            const update = {
+                'xaxis.range': [start, end]
+            };
+
+            Plotly.relayout('all-intervals', update);
+
+            // zoom into range
+        }
+        if (location.hash === '#load-reduction') {
+            const start = "2023-03-22 20:30";
+            const end = "2023-05-04 11:30";
+            const update = {
+                'xaxis.range': [start, end]
+            };
+
+            Plotly.relayout('all-intervals', update);
+
+        }
+
+    });
 }
 
 
