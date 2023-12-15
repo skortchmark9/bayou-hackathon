@@ -35,6 +35,24 @@
                 color: #666;
             }
 
+            #suggestions {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+
+            .suggestion {
+                border-radius: 5px;
+                padding: 5px;
+                background: #d8ff9b;
+
+            }
+            .suggestion svg {
+                float: left;
+                margin: 0 4px;
+            }
+
         </style>
     </head>
     <body>
@@ -51,11 +69,23 @@
             <section id="sidebar">
                 <h1>Welcome Dhanur</h1>
                 <div id="viewing-range"></div>
-                <p>Your Insights:</p>
+                <h2>Your Insights</h2>
                 <ul>
                     <li>Detected Level 2 EV Charger.</li>
                     <li>Reduction in base loads beginning 4/20/23.</li>
                 </ul>
+                <h2>Recommendations</h2>
+                <div id="suggestions">
+                    <div class="suggestion">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 -960 960 960" width="48"><path d="m337-214 88-140h-53v-105l-87 140h52v105ZM220-552h269v-228H220v228Zm0 372h269v-312H220v312Zm-60 60v-660q0-24 18-42t42-18h269q24 0 42 18t18 42v288h65q20.714 0 35.357 14.643T664-442v219q0 22 17.5 36.5T722-172q23 0 43-14.5t20-36.5v-387h-15q-12.75 0-21.375-8.625T740-640v-90h20v-50h30v50h40v-50h30v50h20v90q0 12.75-8.625 21.375T850-610h-15v386.691Q835-180 801-150t-79.181 30q-44.155 0-75.987-30Q614-180 614-223v-219h-65v322H160Zm329-60H220h269Z"/></svg>
+                        Dhanur, we noticed your EV charging rate has degraded since last month. Would you like our recommended EV-certified electrician to come by for a free inspection?
+                    </div>
+                    <div class="suggestion">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 -960 960 960" width="48"><path d="m80-80 80-400h640l80 400H80Zm40-740v-60h120v60H120Zm34 680h296v-110H176l-22 110Zm80-460-43-42 85-85 43 42-85 85Zm-46 290h262v-110H210l-22 110Zm292-390q-74 0-125-52.5T300-880h60q3 50 37 85t83 35q49 0 83-35t37-85h60q-4 75-55 127.5T480-700Zm0-180Zm-30 360v-120h60v120h-60Zm60 380h296l-22-110H510v110Zm0-170h262l-22-110H510v110Zm216-291-85-85 42-42 86 84-43 43Zm-6-219v-60h120v60H720Z"/></svg>
+                        Looking to save money and charge your EV with renewable electricity? Check out EnergySage's list of certified contractors and get free estimates within 48 hours.
+                    </div>
+
+                </div>
             </section>
         </main>
 
