@@ -86,6 +86,7 @@ function plotAllIntervals(data) {
             rangeslider: selectorOptions,
         },
         yaxis: { autorange: true },
+        shapes: [],
     };
 
     Plotly.newPlot('all-intervals', traces, layout);
@@ -265,7 +266,8 @@ async function main() {
 
             const yRange = redrawInRange(start, end);
             const update = {
-                'yaxis.range': yRange
+                'yaxis.range': yRange,
+                shapes: [],
             };
           
             Plotly.relayout('all-intervals', update);
@@ -275,7 +277,8 @@ async function main() {
             plotDailyIntervals(data);
             plotAvgDailyIntervals(data);
             const update = {
-                'yaxis': {}
+                'yaxis': {},
+                shapes: [],
             };
 
             Plotly.relayout('all-intervals', update);
@@ -294,7 +297,62 @@ async function main() {
             const start = "2023-11-29 20:00";
             const end = "2023-12-12 23:45";
             const update = {
-                'xaxis.range': [start, end]
+                'xaxis.range': [start, end],
+                shapes: [{
+                    type: 'rect',
+                    xref: 'x',
+                    yref: 'y',
+                    x0: '2023-12-1 16:00',
+                    x1: '2023-12-2 02:00',
+                    y0: 2400,
+                    y1: 2800,
+                    fillcolor: 'rgba(44, 160, 101, 0.5)',
+                    line: {
+                        color: 'rgb(44, 160, 101)'
+                    }
+                }, {
+                    type: 'rect',
+                    xref: 'x',
+                    yref: 'y',
+                    x0: '2023-12-3 22:00',
+                    x1: '2023-12-4 05:00',
+                    y0: 2400,
+                    y1: 2800,
+                    fillcolor: 'rgba(44, 160, 101, 0.5)',
+                    line: {
+                        color: 'rgb(44, 160, 101)'
+                    }                    
+                }, {
+                    type: 'rect',
+                    xref: 'x',
+                    yref: 'y',
+                    x0: '2023-12-10 21:00',
+                    x1: '2023-12-11 03:00',
+                    y0: 2400,
+                    y1: 2800,
+                    fillcolor: 'rgba(44, 160, 101, 0.5)',
+                    line: {
+                        color: 'rgb(44, 160, 101)'
+                    }                    
+                }, {
+                    type: 'line',
+                    xref: 'paper',
+                    yref: 'y',
+                    x0: 0,
+                    x1: 1,
+                    y0: 2400,
+                    y1: 2400,
+                    line: {
+                      color: 'rgb(50, 171, 96)',
+                      width: 4,
+                      dash: 'dashdot'
+                    },
+                    label: {
+                        text: 'L2 EV Charging',
+                        font: { size: 10, color: 'green' },
+                        textposition: 'top center',
+                      },
+                  },]
             };
 
             Plotly.relayout('all-intervals', update);
@@ -305,7 +363,8 @@ async function main() {
             const start = "2023-03-22 20:30";
             const end = "2023-05-04 11:30";
             const update = {
-                'xaxis.range': [start, end]
+                'xaxis.range': [start, end],
+                shapes: [],
             };
 
             Plotly.relayout('all-intervals', update);
