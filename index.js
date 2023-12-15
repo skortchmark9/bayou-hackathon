@@ -234,17 +234,13 @@ async function main() {
     const debouncedRedrawInRange = debounce(redrawInRange, 300);
 
     document.getElementById('all-intervals').on('plotly_relayout', (evt) => {
-        console.log(evt);
         // from range selector
         if (evt['xaxis.range[0]']) {
             const start = evt['xaxis.range[0]'];
             const end = evt['xaxis.range[1]'];
 
             redrawInRange(start, end);
-            console.log(start, end);
         } else if (evt['xaxis.autorange']) {
-            console.log('auto');
-
             // redraw subplots
             plotDailyIntervals(data);
             plotAvgDailyIntervals(data);
@@ -252,10 +248,8 @@ async function main() {
         } else if (evt['xaxis.range']) {
             const start = evt['xaxis.range'][0];
             const end = evt['xaxis.range'][1];
+            // from range selector, so debounce for perf
             debouncedRedrawInRange(start, end);
-
-
-            console.log(start, end);
         }
     });
 }
