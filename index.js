@@ -236,9 +236,7 @@ async function main() {
 
         } else {
             document.getElementById('viewing-range').innerText = `Viewing ${startNice.toDateString()} - ${endNice.toDateString()}.`
-
         }
-
     }
 
     function redrawInRange(start, end) {
@@ -402,3 +400,7 @@ async function main() {
 
 main();
 
+setTimeout(() => {
+    const loader = document.getElementById('loader');
+    loader.style.display = 'none';
+}, 3000);
